@@ -16,17 +16,19 @@
   line-height: 1.55;
   max-width: 40rem;
 }
-.demo-hero .headphones {
-  display: inline-block;
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.9rem;
+.join-card .headphones {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid var(--accent);
+  border-left-width: 4px;
   border-radius: 0.4rem;
-  color: var(--accent);
-  font-size: 0.95rem;
+  color: var(--accent-ink);
+  font-size: 0.9rem;
+  line-height: 1.45;
 }
 
 .demo-grid {
+  margin-top: 2.25rem;
   display: grid;
   grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
   gap: 1.5rem;
@@ -38,6 +40,7 @@
 
 .join-card, .space-card {
   background: var(--paper);
+  color: var(--ink);
   border: 1px solid var(--line);
   border-radius: 0.6rem;
   padding: 1.5rem;
