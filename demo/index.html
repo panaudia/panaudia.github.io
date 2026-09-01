@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live demo · LASA · Panaudia</title>
+  <meta name="description" content="Join a live LASA space from your browser: one entity, your voice up, a binaural render of everyone back.">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/lasa.css">
+  <link rel="stylesheet" href="demo.css">
+  <script src="coi-serviceworker.js"></script>
+  <script type="importmap">
+    { "imports": { "@panaudia/lasa-client": "./js/lasa-client/index.js" } }
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/images/lasa/mark-white.png" alt="" width="52" height="52">
+      Panaudia
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="/">LASA</a>
+      <a href="#diy">Do it yourself</a>
+      <a href="https://github.com/panaudia">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="demo-hero">
+  <div class="wrap">
+    <h1>A live space</h1>
+    <p class="lead">
+      This page is a LASA client, talking to a public space on our test
+      server. Pick a name and join: your microphone goes up as one
+      positioned entity, and a binaural render of everyone else comes
+      back. The page is a few hundred lines you can read; the same
+      space is the one your first client can join.
+    </p>
+    <p class="headphones">Wear headphones. This is an open microphone
+      into a shared space, and it is binaural.</p>
+  </div>
+</section>
+
+<section class="tint">
+  <div class="wrap demo-grid">
+
+    <div class="join-card" id="join-card">
+      <h3>Join</h3>
+      <form id="join-form">
+        <label for="name">Your name</label>
+        <input id="name" name="name" type="text" maxlength="24"
+               autocomplete="off" required placeholder="alice">
+        <div class="join-actions">
+          <button class="button" id="join" type="submit">Join the space</button>
+          <button class="button ghost" id="leave" type="button" disabled>Leave</button>
+        </div>
+        <p class="status" id="status" role="status">not connected</p>
+      </form>
+      <p class="note" id="support-note" hidden></p>
+    </div>
+
+    <div class="space-card">
+      <h3>In the space</h3>
+      <div class="space-frame">
+        <svg id="space-view" viewBox="-10 -10 20 20" role="img"
+             aria-label="Top-down view of the space, 20 metres across: one circle per person">
+          <g class="space-grid">
+            <circle cx="0" cy="0" r="2.5"></circle>
+            <circle cx="0" cy="0" r="5"></circle>
+            <circle cx="0" cy="0" r="7.5"></circle>
+            <circle class="origin" cx="0" cy="0" r="0.1"></circle>
+          </g>
+          <g id="space-users"></g>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="diy">
+  <div class="wrap">
+    <h2>Do it yourself</h2>
+    <p class="prose">
+      Everything on this page is the public client on npm and a stock
+      server image. The space it joins runs development-mode admission
+      (no tickets); the docs cover tickets, certificates and
+      deployment when you want your own.
+    </p>
+    <ol class="steps">
+      <li>
+        <h3>Run a space</h3>
+        <div class="body">
+<pre><code>docker run --rm -p 4443:4443/udp \
+  -e PANAUDIA_ALLOW_UNTICKETED=true \
+  panaudia/panaudia-lasa:latest</code></pre>
+        </div>
+      </li>
+      <li>
+        <h3>Install the client</h3>
+        <div class="body">
+<pre><code>npm install @panaudia/lasa-client</code></pre>
+        </div>
+      </li>
+      <li>
+        <h3>Read this page's source</h3>
+        <div class="body">
+          <p>
+            The whole client for this page is
+            <a href="demo.js">demo.js</a>: connect, one entity, capture,
+            binaural playout, the roster. Guides on
+            <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/connecting.md">connecting</a>,
+            <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/audio.md">audio</a>,
+            <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/presence.md">presence</a> and
+            <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/state.md">state</a>.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/images/lasa/mark-white.png" alt="" width="24" height="24">
+      Panaudia
+    </a>
+    <span>
+      <a href="https://github.com/panaudia">github.com/panaudia</a>
+      &nbsp;·&nbsp; MIT
+      &nbsp;·&nbsp; &copy; Glowinthedark Ltd 2026
+    </span>
+  </div>
+</footer>
+
+<script type="module" src="demo.js"></script>
+</body>
+</html>

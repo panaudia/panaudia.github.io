@@ -16,6 +16,13 @@ Layout:
     css/lasa.css        the whole stylesheet, fonts declared at the top
     fonts/              Quicksand (variable), Source Code Pro
     images/             favicon and the waveform mark
+    demo/               the live demo (plan: lasa-planning
+                        plan/live-demo-page.md); demo/js/lasa-client/
+                        index.js is the built @panaudia/lasa-client,
+                        copied from lasa/typescript/dist/index.js —
+                        refresh it by hand on a client release.
+                        demo/coi-serviceworker.js is vendored
+                        (gzuidhof/coi-serviceworker, MIT).
 
 To view locally:
 
