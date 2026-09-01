@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LASA · Panaudia</title>
+  <meta name="description" content="LASA is an open protocol for live, object-based spatial audio over Media over QUIC, with browser, native and server implementations from Panaudia.">
+  <meta name="robots" content="all">
+
+  <meta property="og:title" content="LASA · Live Atomic Spatial Audio">
+  <meta property="og:description" content="An open protocol for live, object-based spatial audio, built on Media over QUIC.">
+  <meta property="og:url" content="https://panaudia.com/">
+  <meta property="og:image" content="https://panaudia.com/images/lasa/mark-navy.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="LASA · Live Atomic Spatial Audio">
+  <meta name="twitter:description" content="An open protocol for live, object-based spatial audio, built on Media over QUIC.">
+
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/lasa.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="images/lasa/mark-white.png" alt="" width="52" height="52">
+      Panaudia
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#idea">The idea</a>
+      <a href="#pieces">The pieces</a>
+      <a href="#get-started">Get started</a>
+      <a href="#status">Status</a>
+      <a href="#contact">Contact</a>
+      <a href="https://github.com/panaudia">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <img class="hero-mark" src="images/lasa/mark-white.png" alt="" aria-hidden="true">
+    <h1>LASA</h1>
+    <p class="expansion">Live Atomic Spatial Audio</p>
+    <p class="lead">
+      An open protocol for live, object-based spatial audio, built on
+      Media over QUIC. Clients contribute positioned
+      sources and every listener hears a binaural render of the shared
+      space. Audio, position and state travel over one secure connection.
+    </p>
+    <p>
+        <ul>
+            <li>50 ms microphone to speaker latency (excluding network)</li>
+            <li>Binaural output for 128 sources/sinks with 5th order bilateral ambisonics</li>
+            <li>Go/C server. TypeScript, Go and native macOS clients</li>
+        </ul>
+    </p>
+      <p class="lead"></p>
+    <div class="actions">
+      <a class="button" href="#get-started">Get started</a>
+      <a class="button ghost" href="https://github.com/panaudia/lasa/blob/main/README.md">Read the spec</a>
+    </div>
+    <p class="facts">
+      <span>MIT licensed</span>
+      <span>Browser, native and server implementations</span>
+      <span>Version 0.1.5</span>
+    </p>
+  </div>
+</section>
+
+<section id="idea">
+  <div class="wrap">
+    <h2>The idea</h2>
+    <div class="pillars">
+      <div>
+        <h3>Atomic</h3>
+        <p>
+          Audio is sent as 5&nbsp;ms Opus frames, and every frame can
+          carry the full pose of its source: <code>x, y, z, yaw, pitch,
+          roll</code>. Position arrives with the sound it belongs to.
+          There is nothing to synchronise and no interpolation lag
+          between the audio and where it is coming from.
+        </p>
+      </div>
+      <div>
+        <h3>One connection</h3>
+        <p>
+          LASA runs over Media over QUIC. Audio and pose go in lossy,
+          low-latency datagram tracks. State goes in reliable streams.
+          All of it shares one QUIC session with TLS, which a browser
+          opens with WebTransport and a native client opens directly.
+          Optional full-bandwidth redundancy masks packet loss, with a
+          latency cost you choose.
+        </p>
+      </div>
+      <div>
+        <h3>Shared state</h3>
+        <p>
+          Everything that is not audio or pose lives in a real-time,
+          pub-sub key-value store with sequential consistency. The base
+          profile uses it for roles, permissions, channels, moderation
+          and display data. Applications extend it with their own keys.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tint why">
+  <div class="wrap">
+    <h2>Why it exists</h2>
+    <div class="prose">
+      <p>
+        Live spatial audio has been stuck with formats and tools that were built for
+        something else: WebRTC or RTP that carry voice well but have no notion of
+        space; theatrical delivery formats without 6DoF or support for live, and game
+        engine voice bound to specific engines and with limited capacity.
+      </p>
+      <p>
+        The newer immersive formats, Eclipsa and MPEG-I Immersive
+        Audio, are delivery formats: they carry a
+        finished scene to a renderer. LASA is the step before that,
+        many people contributing positioned sources, live, into one
+        shared space. The two fit together. A LASA space is a scene
+        those formats could carry to an audience.
+      </p>
+      <p>
+        LASA is the missing layer: a wire format and a server that
+        render a shared acoustic space for hundreds of listeners at
+        once, from browsers, native apps and studio rigs alike. It is
+        small enough to read in an afternoon and complete enough to
+        build on.
+      </p>
+      <p class="aside">
+        Whether that space is a virtual venue, a distributed choir, a
+        research rig with six degrees of freedom, or a room full of
+        people talking, the protocol is the same.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="pieces">
+  <div class="wrap">
+    <h2>The pieces</h2>
+    <div class="cards">
+
+      <article class="card">
+        <h3>The specification</h3>
+        <p class="role">Two documents and a set of schemas</p>
+        <p>
+          <code>lasa-core.md</code> defines identifiers, tracks and
+          namespaces, connection and authentication, the audio packet
+          format, presence, and the state machinery with its wire
+          encoding. <code>lasa-base-profile.md</code> defines the
+          <code>lasa.</code> state namespace: roles, permissions,
+          channels, moderation and key lifetimes. JSON Schema documents
+          describe every data object.
+        </p>
+        <footer>
+          <span>MIT</span>
+          <a href="https://github.com/panaudia/lasa">github.com/panaudia/lasa</a>
+        </footer>
+      </article>
+
+      <article class="card">
+        <h3>@panaudia/lasa-client</h3>
+        <p class="role">The browser client, in TypeScript</p>
+        <p>
+          Publishes object audio with pose, plays rendered sinks,
+          follows the presence feed and synchronises the state store,
+          all from a web page. Built on WebTransport, WebCodecs and
+          AudioWorklet, ESM only, with no runtime dependencies.
+        </p>
+        <footer>
+          <span>MIT</span>
+          <a href="https://www.npmjs.com/package/@panaudia/lasa-client">npmjs.com/package/@panaudia/lasa-client</a>
+        </footer>
+      </article>
+
+      <article class="card">
+        <h3>Panaudia LASA server</h3>
+        <p class="role">Media server and spatial engine</p>
+        <p>
+          A full reference implementation of LASA, a high-performance Go/C media server and spatial engine providing up to 5th order bi-lateral
+            ambisonics with near field compensation. Ingests every source, renders a binaural or ambisonic sink
+          per listener, and holds the state store.
+        </p>
+        <footer>
+          <span>MIT</span>
+          <a href="https://github.com/panaudia/panaudia-lasa">github.com/panaudia/panaudia-lasa</a>
+        </footer>
+      </article>
+
+      <article class="card">
+        <h3>Panaudia Bridge</h3>
+        <p class="role">Real audio devices into a space</p>
+        <p>
+          A native macOS application that bridges CoreAudio devices to
+          LASA: any number of input channels become positioned
+          entities, and the binaural render comes back out. Saves rigs
+          as files, so a studio arrangement opens on a laptop. Signed
+          and notarised.
+        </p>
+        <footer>
+          <span>macOS</span>
+          <a href="https://storage.googleapis.com/panaudia-dist/panaudia-bridge/panaudia-bridge-0.1.2.dmg">panaudia-bridge-0.1.2.dmg</a>
+        </footer>
+      </article>
+
+      <article class="card">
+        <h3>lasa-ticket</h3>
+        <p class="role">Keys and admission</p>
+        <p>
+          A ticket is a signed Ed25519 JWT admitting one client to one
+          space, carrying its identity, roles, permissions and entity
+          definitions. <code>lasa-ticket</code> generates keys, mints
+          and verifies tickets from the command line. Samples in Go,
+          Python and TypeScript show how to issue tickets from your own
+          backend.
+        </p>
+        <footer>
+          <span>MIT</span>
+          <a href="https://github.com/panaudia/lasa/tree/main/tickets">github.com/panaudia/lasa/tickets</a>
+        </footer>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="get-started" class="tint get-started">
+  <div class="wrap">
+    <h2>Get started</h2>
+    <p class="prose intro">
+      A space running locally, and a page talking to it, in three
+      steps. The development mode below admits anyone. The docs cover
+      tickets, certificates and deployment.
+    </p>
+    <ol class="steps">
+      <li>
+        <h3>Run a space</h3>
+        <div class="body">
+<pre><code>docker run --rm -p 4443:4443/udp \
+  -e PANAUDIA_ALLOW_UNTICKETED=true \
+  panaudia/panaudia-lasa:latest</code></pre>
+          <p>
+            One image for amd64 and Apple silicon. The server prints
+            its certificate hash at boot. Copy it.
+          </p>
+        </div>
+      </li>
+      <li>
+        <h3>Install the client</h3>
+        <div class="body">
+<pre><code>npm install @panaudia/lasa-client</code></pre>
+        </div>
+      </li>
+      <li>
+        <h3>Connect, speak, listen</h3>
+        <div class="body">
+<pre><code><span class="k">import</span> { LasaClient } <span class="k">from</span> <span class="s">'@panaudia/lasa-client'</span>;
+
+<span class="k">const</span> client = <span class="k">await</span> LasaClient.connect({
+  url: <span class="s">'https://localhost:4443/lasa'</span>,
+  spaceId: <span class="s">'main'</span>,
+  clientId: <span class="s">'alice'</span>,
+  entities: [{ id: <span class="s">'alice-voice'</span>, name: <span class="s">'Alice'</span> }],
+  serverCertificateHashBase64: hash,   <span class="c">// from the server log</span>
+});
+
+<span class="k">const</span> ctx = <span class="k">new</span> AudioContext({ sampleRate: 48000 });
+<span class="k">const</span> mic = <span class="k">await</span> navigator.mediaDevices.getUserMedia({ audio: <span class="k">true</span> });
+
+<span class="k">await</span> client.startCapture(<span class="s">'alice-voice'</span>, {
+  source: ctx.createMediaStreamSource(mic),
+  pose: { x: 0, y: 0, z: 0, yaw: 0, pitch: 0, roll: 0 },
+});
+<span class="k">await</span> client.playSink(<span class="s">'alice-voice'</span>, <span class="s">'binaural'</span>);</code></pre>
+          <p class="note">
+            Your page must be served with
+            <code>Cross-Origin-Opener-Policy: same-origin</code> and
+            <code>Cross-Origin-Embedder-Policy: require-corp</code>, so
+            the client can use <code>SharedArrayBuffer</code>.
+          </p>
+        </div>
+      </li>
+    </ol>
+    <p class="after prose">
+      Full guides on
+      <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/connecting.md">connecting</a>,
+      <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/audio.md">audio</a>,
+      <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/presence.md">presence</a>,
+      <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/state.md">state</a> and
+      <a href="https://github.com/panaudia/lasa/blob/main/typescript/docs/profile.md">the base profile</a>.
+    </p>
+  </div>
+</section>
+
+<section id="status" class="dark status">
+  <div class="wrap">
+    <h2>Status</h2>
+    <div class="prose">
+      <p class="date">August 2026</p>
+      <p>
+        LASA is at version 0.1. The specification is stable enough to
+        implement against and is tagged. The browser client is tested
+        against Chromium, and works in other engines as their
+        WebTransport and WebCodecs support allows. The Bridge runs on
+        macOS. An iOS client is in design. We expect to make breaking
+        changes before 1.0 and will say so in the release notes.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="dark contact">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Panaudia</h2>
+      <p>
+        LASA is made by Paul Harter at glowinthedark, a small spatial audio company in London.
+          It is the protocol we wished had existed when we started
+        building live spatial audio systems.
+      </p>
+      <p>
+        We are building a hosted service on LASA. If you would like
+        early access, or want to talk about a project, write to
+        <a class="email" href="mailto:support@panaudia.com">support@panaudia.com</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="images/lasa/mark-white.png" alt="" width="24" height="24">
+      Panaudia
+    </a>
+    <span>
+      <a href="https://github.com/panaudia">github.com/panaudia</a>
+      &nbsp;·&nbsp; MIT
+      &nbsp;·&nbsp; &copy; Glowinthedark Ltd 2026
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
