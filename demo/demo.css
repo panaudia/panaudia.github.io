@@ -5,11 +5,28 @@
   color: var(--on-navy);
   padding-block: clamp(2.5rem, 6vw, 4.5rem);
 }
+.demo-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1rem;
+}
 .demo-hero h1 {
   font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 700;
   letter-spacing: 0.02em;
-  margin-bottom: 1rem;
+  margin: 0;
+}
+/* The pointer to the 3D town square: small, quiet, top right. */
+.hero-link {
+  font-size: 0.9rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.hero-link::after {
+  content: " \2197";  /* north-east arrow */
 }
 .demo-hero .lead {
   font-size: clamp(1.05rem, 1.6vw, 1.2rem);
@@ -94,7 +111,7 @@
 .space-grid circle {
   fill: none;
   stroke: var(--line);
-  stroke-width: 0.06;
+  stroke-width: 0.18;
 }
 .space-grid .origin {
   fill: var(--line);
@@ -107,18 +124,18 @@
 .user .body {
   fill: var(--ink-soft);
   stroke: var(--paper);
-  stroke-width: 0.09;
+  stroke-width: 0.27;
 }
 .user .facing {
   fill: none;
   stroke: var(--ink-soft);
-  stroke-width: 0.16;
+  stroke-width: 0.48;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 .user text {
   font-family: var(--body);
-  font-size: 0.6px;
+  font-size: 1.8px;
   fill: var(--ink);
   text-anchor: middle;
 }

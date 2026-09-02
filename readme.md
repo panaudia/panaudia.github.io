@@ -23,6 +23,27 @@ Layout:
                         refresh it by hand on a client release.
                         demo/coi-serviceworker.js is vendored
                         (gzuidhof/coi-serviceworker, MIT).
+    demo/square/        the 3D town square on the same space
+                        (three.js, vendored under demo/square/js/
+                        three). Head tracking uses voltface
+                        (demo/square/js/voltface, the built module
+                        copied from the voltface repo) on top of
+                        MediaPipe, which is NOT vendored: see below.
+
+Head tracking on the town square loads MediaPipe from third-party
+hosts rather than this repo. The runtime (about 12 MB of wasm) is
+too big to want in git, so the import map in demo/square/index.html
+and the paths in demo/square/start.js point at
+
+    https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.34/
+    https://storage.googleapis.com/mediapipe-models/face_landmarker/...
+
+Nothing is fetched until a visitor clicks "Head tracking", and both
+hosts send CORS headers, so the loads work under the page's
+cross-origin isolation (verified 2026-09-02). The version pin must
+match in index.html and start.js, and must stay at what the vendored
+voltface was built against. If either host goes away, only head
+tracking breaks; joining and audio are unaffected.
 
 To view locally:
 

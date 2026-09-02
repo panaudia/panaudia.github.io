@@ -1,0 +1,701 @@
+/* Town-square 3D demo. A merge of the old panaudia.com main.css,
+   controls.css and square-controls.css, adapted to the new site:
+   fonts from /fonts, site navy/teal, plain Unicode glyphs on the
+   touch pads (the old page used FontAwesome Pro, which is licensed
+   and stays out of this repo).
+
+   Palette: the tokens below mirror css/lasa.css. Every overlay on
+   the 3D view (the join panel, the audio/head-tracking panel, the
+   instructions bar) is the same translucent navy card with the same
+   radius, text and accent; the only other colours are the danger
+   red for muted/errors and the ink greys on the light scene. */
+
+:root {
+    --navy: #18334b;
+    --navy-ink: #10243a;
+    --ink: #1b2430;
+    --ink-soft: #4a5561;
+    --on-navy: #e9eef3;
+    --on-navy-soft: #a9b8c6;
+    --accent: #6fc9d8;
+    --accent-ink: #1c7a8a;
+    --danger: #ff8a8a;
+    --scene: #f4f4f4;
+
+    --panel: rgba(24, 51, 75, 0.85);        /* navy at 85 % over the scene */
+    --panel-line: rgba(233, 238, 243, 0.18); /* on-navy hairlines and tracks */
+    --panel-radius: 12px;
+}
+
+@font-face {
+    font-family: Quicksand;
+    font-style: normal;
+    font-optical-sizing: auto;
+    font-weight: 300 700;
+    src: url('/fonts/Quicksand-VariableFont_wght.ttf');
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+    overscroll-behavior: none;
+}
+
+body {
+    margin: 0;
+    background-color: var(--scene);
+    color: var(--ink);
+    font-family: Quicksand, "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    --decoration-display: block;
+}
+
+h2 {
+    font-weight: normal;
+}
+
+a {
+    color: var(--accent-ink);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+
+.ident {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 64px;
+    padding: .5rem 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.ident > a:hover {
+    text-decoration: none;
+}
+
+.pan-logo {
+    width: 48px;
+    margin: 4px 0 4px 8px;
+}
+
+.title {
+    box-sizing: border-box;
+    display: inline-block;
+    font-family: Quicksand, sans-serif;
+    color: var(--navy);
+    font-size: 1.3rem;
+    letter-spacing: 4px;
+    margin-left: 20px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+/* ── Join panel ─────────────────────────────────────────────────── */
+
+.side {
+    width: 600px;
+    background-color: var(--panel);
+    color: var(--on-navy);
+    position: absolute;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    top: 10%;
+    left: calc((100% - 600px) / 2);
+    z-index: 1;
+    border-radius: var(--panel-radius);
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+.side a {
+    color: var(--accent);
+}
+
+.info-box {
+    margin: 40px 40px 0;
+}
+
+/* Body copy on the card is one size (the .side font-size); only the
+   heading differs. The headphones line is soft, not smaller. */
+.headphones {
+    color: var(--on-navy-soft);
+    margin: 0 40px 16px;
+}
+
+#error-block {
+    display: none;
+    text-align: center;
+}
+
+.info-icon {
+    width: 80px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.colours-picker {
+    width: 160px;
+    height: 160px;
+    position: relative;
+    display: inline-block;
+}
+
+.picker-wrapper {
+    position: absolute;
+    border: 1px solid var(--panel-line);
+}
+
+#outer-picker-wrapper {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+}
+
+#inner-picker-wrapper {
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
+    border-radius: calc((100% - 0px) / 2);
+    top: 25px;
+    left: 25px;
+}
+
+input[type=color] {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0;
+    display: block;
+    border: none;
+}
+
+/* The name field and the Enter button share one width and height. */
+.square-form,
+button,
+.spinner {
+    width: 400px;
+    max-width: calc(100% - 80px);
+    height: 42px;
+}
+
+.square-form {
+    margin-top: 10px;
+    font-size: 1.5rem;
+    font-family: inherit;
+    padding: 3px 10px;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.square-form:focus {
+    outline: 2px solid var(--accent);
+}
+
+button {
+    display: inline-block;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    text-transform: uppercase;
+    margin: 16px 0 0;
+    border-radius: 4px;
+    background: var(--accent);
+    border: 2px solid var(--accent);
+    color: var(--navy-ink);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0 18px;
+    font-family: inherit;
+}
+
+button:hover {
+    filter: brightness(1.08);
+}
+
+.disabled {
+    background: transparent;
+    border-color: var(--on-navy-soft);
+    color: var(--on-navy-soft);
+    opacity: 0.5;
+}
+
+.disabled:hover {
+    filter: none;
+}
+
+.disabled:hover {
+    cursor: default;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.spinner {
+    display: inline-block;
+    line-height: 1.3;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    margin: 16px 0 0;
+    padding: 0;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 30px;
+    height: 30px;
+    margin: 4px;
+    border-radius: 50%;
+    border: 4px solid var(--accent);
+    border-color: var(--accent) transparent var(--accent) transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ── In-world UI ────────────────────────────────────────────────── */
+
+#renderer {
+    touch-action: pan-x pan-y;
+}
+
+.instructions {
+    display: none;
+    position: absolute;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--panel);
+    color: var(--on-navy);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-align: center;
+}
+
+.nameLabel {
+    font-family: Quicksand, sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+/* ── In-world panel (bottom left, shown once in the square): who you
+   are, head tracking, volume and mute ───────────────────────────── */
+
+.audio-controls {
+    position: absolute;
+    left: 20px;
+    bottom: 45px;
+    width: 220px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px;
+    background-color: var(--panel);
+    border-radius: var(--panel-radius);
+    color: var(--on-navy);
+}
+
+.volume-row,
+.mic-row,
+.me-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.me-row {
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid var(--panel-line);
+}
+
+/* The two-colour sphere from the join card, in miniature. */
+.me-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.me-avatar-inner {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.me-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pill {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 2px 9px;
+    text-decoration: none;
+    user-select: none;
+}
+
+.pill:hover {
+    background: var(--accent);
+    color: var(--navy-ink);
+    text-decoration: none;
+}
+
+/* Click a sphere with the pointer free and this appears beside it:
+   the name and a Ghost / Unghost pill. Ghosting is a personal mute,
+   both ways, and the sphere goes faint. */
+.node-menu {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background-color: var(--panel);
+    border-radius: var(--panel-radius);
+    color: var(--on-navy);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.nameLabel.ghost {
+    opacity: 0.35;
+}
+
+.control-icon {
+    width: 19px;
+    height: 19px;
+    color: var(--on-navy-soft);
+    flex-shrink: 0;
+}
+
+#mic-icon-off {
+    color: var(--danger);
+}
+
+.mic-link,
+.ht-link {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+}
+
+.mic-link:hover,
+.ht-link:hover {
+    text-decoration: underline;
+}
+
+.mic-link.mic-muted {
+    color: var(--danger);
+}
+
+.volume-row input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 4px;
+    background: var(--panel-line);
+    border-radius: 2px;
+    outline: none;
+}
+
+.volume-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.volume-row input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+/* Head-tracking panel, injected by head-tracking.js above the rows.
+   Collapsed shows only the enable link; active shows the head
+   wireframe plus Recenter/Off. */
+
+.ht-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid var(--panel-line);
+}
+
+.ht-expanded {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.ht-panel.ht-active .ht-expanded {
+    display: flex;
+}
+
+.ht-panel.ht-active #ht-enable {
+    display: none;
+}
+
+/* The tracker reads the video pixels, so the element must stay in the
+   DOM and playing: keep it out of sight rather than display: none,
+   which can stop frame decoding in some browsers. */
+.ht-video-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ht-head {
+    display: block;
+    align-self: center;
+}
+
+.ht-btn-row {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+.ht-error {
+    color: var(--danger);
+    font-size: 12px;
+    background: rgba(255, 138, 138, 0.12);
+    border-radius: 6px;
+    padding: 6px 8px;
+}
+
+/* ── Touch controls ─────────────────────────────────────────────── */
+
+.touch {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 40px;
+    text-align: center;
+    font-size: 1.3rem;
+    line-height: 74px;
+    color: var(--ink-soft);
+    border-color: var(--ink-soft);
+    display: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#touch-move {
+    --move-decoration-display: block;
+}
+
+#touch-look {
+    --look-decoration-display: block;
+}
+
+.touch-label {
+    position: relative;
+    top: 20px;
+}
+
+.touch-hand {
+    font-size: 2.0rem;
+}
+
+.touch-move {
+    top: calc((100% - 240px));
+    left: 120px;
+}
+
+.move-decoration {
+    display: var(--move-decoration-display);
+}
+
+.look-decoration {
+    display: var(--look-decoration-display);
+}
+
+.touch-look {
+    top: calc((100% - 240px));
+    left: calc((100% - 200px));
+}
+
+.touch-arrow {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    line-height: 50px;
+    font-size: 2.0rem;
+    color: var(--ink-soft);
+}
+
+.touch-arrow-up {
+    top: -44px;
+    left: -2px;
+}
+
+.touch-arrow-down {
+    top: 40px;
+    left: -2px;
+    transform: rotate(180deg);
+}
+
+.touch-arrow-right {
+    top: -2px;
+    left: 44px;
+    transform: rotate(90deg);
+}
+
+.touch-arrow-left {
+    top: -2px;
+    left: -44px;
+    transform: rotate(270deg);
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
+
+.mobile-turn {
+    position: absolute;
+    padding-top: 60px;
+    margin-top: 150px;
+    padding-bottom: 40px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    font-size: 1.4rem;
+    line-height: 1.3;
+    display: none;
+}
+
+.turn-img {
+    width: 100px;
+    display: inline-block;
+}
+
+@media (max-device-width: 480px) and (orientation: portrait) {
+
+    .side {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        font-size: 1.1rem;
+        line-height: 1.3;
+        text-align: center;
+        border-radius: 0;
+    }
+
+    .mobile-turn {
+        display: block;
+    }
+
+    .info-box {
+        display: none;
+    }
+
+    #connect {
+        display: none;
+    }
+}
+
+@media (max-device-height: 480px) {
+
+    .audio-controls {
+        bottom: 20px;
+    }
+
+    #info-box {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .colours-picker {
+        margin-top: 0;
+        margin-bottom: 0;
+        width: 130px;
+        height: 130px;
+    }
+
+    .center-holder {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .side {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        font-size: 0.9rem;
+        line-height: 1.3;
+        text-align: center;
+        border-radius: 0;
+        padding-top: 10px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+    }
+
+    #connect {
+        font-size: 1.1rem;
+    }
+}

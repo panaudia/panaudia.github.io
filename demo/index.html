@@ -32,7 +32,10 @@
 
 <section class="demo-hero">
     <div class="wrap">
-        <h1>A live LASA space</h1>
+        <div class="demo-title">
+            <h1>A live LASA space</h1>
+            <a class="hero-link" href="square/">The same space in 3D</a>
+        </div>
         <p class="lead">
             This is our live, public test space. Drag your circle to move, drag its arrow to turn.
         </p>
@@ -59,13 +62,13 @@
 
             <div class="space-card">
                 <div class="space-frame">
-                    <svg id="space-view" viewBox="-10 -10 20 20" role="img"
-                         aria-label="Top-down view of the space, 20 metres across: one circle per person">
+                    <svg id="space-view" viewBox="-30 -30 60 60" role="img"
+                         aria-label="Top-down view of the space, 60 metres across: one circle per person">
                         <g class="space-grid">
-                            <circle cx="0" cy="0" r="2.5"></circle>
-                            <circle cx="0" cy="0" r="5"></circle>
                             <circle cx="0" cy="0" r="7.5"></circle>
-                            <circle class="origin" cx="0" cy="0" r="0.1"></circle>
+                            <circle cx="0" cy="0" r="15"></circle>
+                            <circle cx="0" cy="0" r="22.5"></circle>
+                            <circle class="origin" cx="0" cy="0" r="0.3"></circle>
                         </g>
                         <g id="space-users"></g>
                     </svg>

@@ -75,6 +75,7 @@ async function join() {
     clientId,
     entities: [{ id: entityId, name }],
     serverCertificateHashBase64: CERT_HASH,
+    debug: params.has('debug'),
     onClosed: (info) => {
       setStatus(`closed${info.reason ? `: ${info.reason}` : ''}`);
       void teardown();
@@ -145,16 +146,18 @@ function render() {
       // rotated into the facing; SVG rotate is clockwise, yaw is
       // anticlockwise, hence the sign.
       const deg = (-yaw * 180 / Math.PI).toFixed(1);
-      const glow = lv > 0 ? `<circle class="glow" r="${(0.62 + 1.0 * lv).toFixed(2)}"></circle>` : '';
-      const handle = me ? `<circle class="facing-hit" cy="-0.79" r="0.5"></circle>` : '';
+      // Glyphs are map markers, not to scale: a person draws at 1.5 m
+      // radius so they stay legible in the 60 m view.
+      const glow = lv > 0 ? `<circle class="glow" r="${(1.86 + 3.0 * lv).toFixed(2)}"></circle>` : '';
+      const handle = me ? `<circle class="facing-hit" cy="-2.37" r="1.5"></circle>` : '';
       return `<g class="user${me ? ' me' : ''}" transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">` +
         glow +
         `<g class="heading" transform="rotate(${deg})">` +
-        `<path class="facing" d="M -0.24 -0.66 L 0 -0.92 L 0.24 -0.66"></path>` +
+        `<path class="facing" d="M -0.72 -1.98 L 0 -2.76 L 0.72 -1.98"></path>` +
         handle +
         `</g>` +
-        `<circle class="body" r="0.5"></circle>` +
-        `<text y="1.2">${escapeHtml(name)}</text>` +
+        `<circle class="body" r="1.5"></circle>` +
+        `<text y="3.6">${escapeHtml(name)}</text>` +
         `</g>`;
     });
   spaceUsers.innerHTML = users.join('');
@@ -187,9 +190,9 @@ spaceView.addEventListener('pointermove', (ev) => {
   const pose = session.myPose;
   if (drag.mode === 'move') {
     // Positions are unbounded in LASA; the clamp just keeps our
-    // circle inside the visible 20 m.
-    pose.x = Math.max(-9.5, Math.min(9.5, wx));
-    pose.y = Math.max(-9.5, Math.min(9.5, wy));
+    // circle inside the visible 60 m.
+    pose.x = Math.max(-29.5, Math.min(29.5, wx));
+    pose.y = Math.max(-29.5, Math.min(29.5, wy));
   } else {
     // Point the caret at the pointer. atan2 keeps yaw in (−π, π].
     pose.yaw = Math.atan2(wy - pose.y, wx - pose.x);
