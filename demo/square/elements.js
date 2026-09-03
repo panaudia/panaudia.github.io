@@ -51,13 +51,14 @@ export function makeNode() {
     return {obj: group, outerMat: material, mat: material2, label};
 }
 
-// Attrs are the entity's base-profile attributes (strings); visitors
-// from the 2D demo page have none and keep the default colours.
+// Attrs are the entity's base-profile attributes (strings). Visitors
+// from the 2D demo page publish only `colour`, so their outer sphere
+// takes the same hue; entities with neither keep the defaults.
 export function styleNode(node, name, attrs) {
     let inner = DEFAULT_INNER;
     let outer = DEFAULT_OUTER;
-    if (attrs !== undefined && typeof attrs['inner-colour'] === 'string') {
-        inner = parseInt(attrs['inner-colour'], 16);
+    if (attrs !== undefined && typeof attrs['colour'] === 'string') {
+        inner = parseInt(attrs['colour'], 16);
         outer = typeof attrs['outer-colour'] === 'string' ? parseInt(attrs['outer-colour'], 16) : inner;
     }
     node.mat.color.setHex(inner);
@@ -128,7 +129,7 @@ export function addMapCamera(scene, cube_cm, camera) {
 // meSpheres collects the meshes so world.js can remove them on leave.
 export function addMe(attr, camera, meSpheres) {
 
-    const inner_colour = parseInt(attr.innerColour, 16);
+    const inner_colour = parseInt(attr.colour, 16);
     const outer_colour = parseInt(attr.outerColour, 16);
 
     const geometry = new THREE.SphereGeometry(cursorSize, 32, 16);

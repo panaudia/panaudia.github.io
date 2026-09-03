@@ -233,7 +233,7 @@ async function join(attr) {
         // old page put them in the connection's attribute tree.
         const me = await client.entity(entityId);
         await me.setAttrs({
-            'inner-colour': attr.innerColour,
+            'colour': attr.colour,
             'outer-colour': attr.outerColour,
         });
 
@@ -291,7 +291,7 @@ function onRosterUpdate() {
 // miniature, and the name as typed.
 function showIdentity(attr) {
     document.getElementById('me-avatar').style.backgroundColor = '#' + attr.outerColour;
-    document.getElementById('me-avatar-inner').style.backgroundColor = '#' + attr.innerColour;
+    document.getElementById('me-avatar-inner').style.backgroundColor = '#' + attr.colour;
     document.getElementById('me-name').textContent = attr.name;
 }
 

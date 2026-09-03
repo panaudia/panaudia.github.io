@@ -27,8 +27,33 @@ const status = $('status');
 const spaceView = $('space-view');
 const spaceUsers = $('space-users');
 const supportNote = $('support-note');
+const swatches = $('swatches');
 
 let session = null;
+
+// The colour you pick rides on the entity as the base-profile attr
+// `colour`, a six-digit hex string without the hash, which is what
+// the 3D page publishes and reads too. Fixed palette, drawn as dots.
+const PALETTE = ['2f56ee', '00bbff', '1fa87a', 'e0a800', 'ef6c2a', 'd63a5c', '8a4fd6', '5c6b7a'];
+const HEX6 = /^[0-9a-f]{6}$/i;
+
+for (const [i, c] of PALETTE.entries()) {
+  const label = document.createElement('label');
+  label.className = 'swatch';
+  label.style.setProperty('--c', `#${c}`);
+  const input = document.createElement('input');
+  input.type = 'radio';
+  input.name = 'colour';
+  input.value = c;
+  input.checked = i === Math.floor(Math.random() * PALETTE.length);
+  label.append(input);
+  swatches.append(label);
+}
+if (!swatches.querySelector('input:checked')) swatches.querySelector('input').checked = true;
+
+function chosenColour() {
+  return swatches.querySelector('input:checked')?.value ?? PALETTE[0];
+}
 
 function setStatus(text, isError = false) {
   status.textContent = text;
@@ -66,6 +91,7 @@ function poseOnCircle() {
 
 async function join() {
   const name = nameInput.value.trim();
+  const colour = chosenColour();
   const { clientId, entityId } = makeIds(name);
   setStatus('connecting');
 
@@ -105,10 +131,14 @@ async function join() {
     const view = baseView(store);
     await sync.settled();
 
-    session = { client, entityId, ctx, capture, player, roster, sync, view, myPose };
+    const me = await client.entity(entityId);
+    await me.setAttrs({ colour });
+
+    session = { client, entityId, ctx, capture, player, roster, sync, view, myPose, colour };
     joinButton.disabled = true;
     leaveButton.disabled = false;
     nameInput.disabled = true;
+    swatches.disabled = true;
     setStatus(`in the space as ${name}`);
     render();
   } catch (e) {
@@ -135,8 +165,13 @@ function render() {
     .snapshot()
     .sort((a, b) => (a.id < b.id ? -1 : 1))
     .map((e) => {
-      const name = view.entity(e.id)?.name ?? e.id;
+      const entity = view.entity(e.id);
+      const name = entity?.name ?? e.id;
       const me = e.id === entityId;
+      // Our own colour is known locally before the state echo lands;
+      // peers without one (or with junk) fall through to the CSS default.
+      const c = me ? session.colour : entity?.attrs?.colour;
+      const tint = typeof c === 'string' && HEX6.test(c) ? ` style="--c:#${c}"` : '';
       const lv = level(loudnessToDBFS(e.loudness));
       // Our own glyph draws from the local pose, so dragging tracks
       // the pointer instead of the presence echo.
@@ -150,7 +185,7 @@ function render() {
       // radius so they stay legible in the 60 m view.
       const glow = lv > 0 ? `<circle class="glow" r="${(1.86 + 3.0 * lv).toFixed(2)}"></circle>` : '';
       const handle = me ? `<circle class="facing-hit" cy="-2.37" r="1.5"></circle>` : '';
-      return `<g class="user${me ? ' me' : ''}" transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">` +
+      return `<g class="user${me ? ' me' : ''}"${tint} transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">` +
         glow +
         `<g class="heading" transform="rotate(${deg})">` +
         `<path class="facing" d="M -0.72 -1.98 L 0 -2.76 L 0.72 -1.98"></path>` +
@@ -214,6 +249,7 @@ async function teardown() {
   joinButton.disabled = false;
   leaveButton.disabled = true;
   nameInput.disabled = false;
+  swatches.disabled = false;
   spaceUsers.innerHTML = '';
   if (!s) return;
   await s.client.close(); // stops capture, playout, presence and state

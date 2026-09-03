@@ -71,7 +71,7 @@
             if (window.lasaUnsupported) { return; }
             window.connect({
                 name: document.getElementById('name-input').value.trim() || 'guest',
-                innerColour: document.getElementById('inner-picker').value.slice(1),
+                colour: document.getElementById('inner-picker').value.slice(1),
                 outerColour: document.getElementById('outer-picker').value.slice(1),
             });
         }
